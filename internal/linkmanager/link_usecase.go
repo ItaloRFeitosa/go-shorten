@@ -42,13 +42,9 @@ func (u *linkUseCase) Create(ctx context.Context, input CreateLinkInput) error {
 }
 
 func (u *linkUseCase) UpdateInfo(ctx context.Context, input UpdateLinkInfoInput) error {
-	link, err := u.repo.Get(ctx, input.ID)
+	link, err := u.getLink(ctx, input.ID, input.OwnerID)
 	if err != nil {
 		return err
-	}
-
-	if !link.BelongsTo(input.OwnerID) {
-		return ErrWrongOwnerID
 	}
 
 	link.Name = input.Name
@@ -61,13 +57,9 @@ func (u *linkUseCase) UpdateInfo(ctx context.Context, input UpdateLinkInfoInput)
 }
 
 func (u *linkUseCase) ChangeOriginalLink(ctx context.Context, input ChangeOriginalLinkInput) error {
-	link, err := u.repo.Get(ctx, input.ID)
+	link, err := u.getLink(ctx, input.ID, input.OwnerID)
 	if err != nil {
 		return err
-	}
-
-	if !link.BelongsTo(input.OwnerID) {
-		return ErrWrongOwnerID
 	}
 
 	link.OriginalLink = input.OriginalLink
@@ -76,16 +68,25 @@ func (u *linkUseCase) ChangeOriginalLink(ctx context.Context, input ChangeOrigin
 }
 
 func (u *linkUseCase) Delete(ctx context.Context, input DeleteLinkInput) error {
-	link, err := u.repo.Get(ctx, input.ID)
+	link, err := u.getLink(ctx, input.ID, input.OwnerID)
 	if err != nil {
 		return err
 	}
 
-	if !link.BelongsTo(input.OwnerID) {
-		return ErrWrongOwnerID
+	return u.repo.Delete(ctx, link.ID)
+}
+
+func (u *linkUseCase) getLink(ctx context.Context, id uint, ownerID string) (*Link, error) {
+	link, err := u.repo.Get(ctx, id)
+	if err != nil {
+		return nil, err
 	}
 
-	return u.repo.Delete(ctx, link.ID)
+	if !link.BelongsTo(ownerID) {
+		return nil, ErrWrongOwnerID
+	}
+
+	return link, nil
 }
 
 func (u *linkUseCase) Find(ctx context.Context, query GetAllLinksQuery) ([]LinkDTO, error) {
