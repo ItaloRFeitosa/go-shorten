@@ -1,0 +1,46 @@
+### Create Link
+POST http://localhost:8080/linkmanager/links HTTP/1.1
+content-type: application/json
+x-owner-id: ae603dd2-7cc9-4382-a72c-dbb5015059f7
+
+{
+    "name": "my first link",
+    "description": "my first link",
+    "originalLink": "https://docs.gofiber.io/api/middleware/logger"
+}
+
+### Get Links
+
+GET http://localhost:8080/linkmanager/links HTTP/1.1
+content-type: application/json
+x-owner-id: ae603dd2-7cc9-4382-a72c-dbb5015059f7 
+
+
+### Update Link Info
+
+PATCH http://localhost:8080/linkmanager/links/EG2lAR/info HTTP/1.1
+content-type: application/json
+x-owner-id: ae603dd2-7cc9-4382-a72c-dbb5015059f7
+
+
+{
+    "name": "",
+    "description": ""
+}
+
+### Change Original Link
+
+PATCH http://localhost:8080/linkmanager/links/EG2lAR/originallink HTTP/1.1
+content-type: application/json
+x-owner-id: ae603dd2-7cc9-4382-a72c-dbb5015059f7
+
+
+{
+    "originalLink": "https://www.google.com"
+}
+
+### Delete Link
+
+DELETE http://localhost:8080/linkmanager/links/EG2lAR HTTP/1.1
+content-type: application/json
+x-owner-id: ae603dd2-7cc9-4382-a72c-dbb5015059f7
